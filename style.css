@@ -1,0 +1,38 @@
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 2em auto;
+  padding: 1em;
+  background: #f9f9f9;
+}
+h1 {
+  text-align: center;
+}
+.input-group {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
+input[type="text"] {
+  padding: 0.5em;
+  font-size: 1em;
+  width: 60%;
+  margin-right: 0.5em;
+}
+button {
+  padding: 0.5em 1em;
+  font-size: 1em;
+}
+#weather, #news {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1em;
+  margin-top: 1em;
+  box-shadow: 0 2px 8px #0001;
+}
+.news-item {
+  margin-bottom: 1em;
+}
+.news-item:last-child {
+  margin-bottom: 0;
+}
