@@ -1,3 +1,7 @@
+// Optional: set a proxy URL (e.g. http://localhost:3000) to avoid CORS/API key exposure.
+// If left empty, the script will attempt to call NewsAPI directly (may be blocked by CORS).
+const PROXY_URL = ''; // e.g. 'http://localhost:3000'
+
 const NEWS_API_KEY = '3fe5cb5305474b99baa676d8c37f6071';
 const WEATHER_API_KEY = '240d7be466a311f98ab451c98ac38334';
 
@@ -35,7 +39,10 @@ async function getNews() {
   const newsDiv = document.getElementById('news');
   newsDiv.innerHTML = 'Loading news...';
   try {
-    const url = `https://newsapi.org/v2/top-headlines?country=au&pageSize=5&apiKey=${NEWS_API_KEY}`;
+    // Use proxy when configured to avoid CORS and hide the API key
+    const url = PROXY_URL
+      ? `${PROXY_URL.replace(/\/$/, '')}/news`
+      : `https://newsapi.org/v2/top-headlines?country=au&pageSize=5&apiKey=${NEWS_API_KEY}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('News fetch failed');
     const data = await res.json();
@@ -51,6 +58,7 @@ async function getNews() {
         </div>
       `).join('');
   } catch (err) {
-    newsDiv.innerHTML = `<span style="color:red;">Could not load news.</span>`;
+    console.error('getNews error:', err);
+    newsDiv.innerHTML = `<span style="color:red;">Could not load news. Check console for details.</span>`;
   }
 }
