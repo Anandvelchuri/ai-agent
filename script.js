@@ -1,6 +1,5 @@
-// Optional: set a proxy URL (e.g. http://localhost:3000) to avoid CORS/API key exposure.
-// If left empty, the script will attempt to call NewsAPI directly (may be blocked by CORS).
-const PROXY_URL = ''; // e.g. 'http://localhost:3000'
+// Render.com proxy URL
+const PROXY_URL = 'https://ai-agent-tb0i.onrender.com';
 
 const NEWS_API_KEY = '3fe5cb5305474b99baa676d8c37f6071';
 const WEATHER_API_KEY = '240d7be466a311f98ab451c98ac38334';
