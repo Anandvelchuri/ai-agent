@@ -1,7 +1,5 @@
 // Render.com proxy URL
 const PROXY_URL = 'https://ai-agent-tb0i.onrender.com';
-
-const NEWS_API_KEY = '3fe5cb5305474b99baa676d8c37f6071';
 const WEATHER_API_KEY = '240d7be466a311f98ab451c98ac38334';
 
 async function getInfo() {
@@ -38,18 +36,34 @@ async function getNews() {
   const newsDiv = document.getElementById('news');
   newsDiv.innerHTML = 'Loading news...';
   try {
-    // Use proxy when configured to avoid CORS and hide the API key
-    const url = PROXY_URL
-      ? `${PROXY_URL.replace(/\/$/, '')}/news`
-      : `https://newsapi.org/v2/top-headlines?country=au&pageSize=5&apiKey=${NEWS_API_KEY}`;
-    console.log('Fetching news from:', url);
-    const res = await fetch(url);
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('News fetch failed:', res.status, errorText);
-      throw new Error(`News fetch failed: ${res.status} ${errorText}`);
+    const url = `${PROXY_URL.replace(/\/$/, '')}/news`;
+    console.log('Fetching news from proxy...');
+    
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    let errorText;
+    try {
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await res.json();
+        if (!res.ok) {
+          errorText = JSON.stringify(data);
+          throw new Error(`API Error: ${data.error || data.message || 'Unknown error'}`);
+        }
+        return data;
+      } else {
+        errorText = await res.text();
+        throw new Error('Response was not JSON');
+      }
+    } catch (parseError) {
+      console.error('Response parsing failed:', parseError);
+      throw new Error(`Failed to parse response: ${errorText || parseError.message}`);
     }
-    const data = await res.json();
     if (!data.articles || data.articles.length === 0) {
       newsDiv.innerHTML = 'No news found.';
       return;
