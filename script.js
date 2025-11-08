@@ -42,8 +42,13 @@ async function getNews() {
     const url = PROXY_URL
       ? `${PROXY_URL.replace(/\/$/, '')}/news`
       : `https://newsapi.org/v2/top-headlines?country=au&pageSize=5&apiKey=${NEWS_API_KEY}`;
+    console.log('Fetching news from:', url);
     const res = await fetch(url);
-    if (!res.ok) throw new Error('News fetch failed');
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('News fetch failed:', res.status, errorText);
+      throw new Error(`News fetch failed: ${res.status} ${errorText}`);
+    }
     const data = await res.json();
     if (!data.articles || data.articles.length === 0) {
       newsDiv.innerHTML = 'No news found.';
