@@ -1,0 +1,16 @@
+{
+  "name": "ai-agent-proxy",
+  "version": "1.0.0",
+  "description": "Proxy server for NewsAPI",
+  "main": "proxy.js",
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "start": "node proxy.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.1"
+  }
+}
