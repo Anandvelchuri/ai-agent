@@ -55,7 +55,18 @@ async function getNews() {
           errorText = JSON.stringify(data);
           throw new Error(`API Error: ${data.error || data.message || 'Unknown error'}`);
         }
-        return data;
+        if (!data.articles || data.articles.length === 0) {
+          newsDiv.innerHTML = 'No news found.';
+          return;
+        }
+        newsDiv.innerHTML = '<h2>Top 5 News in Australia</h2>' +
+          data.articles.map(article => `
+            <div class="news-item">
+              <a href="${article.url}" target="_blank"><b>${article.title}</b></a>
+              <p>${article.description || ''}</p>
+            </div>
+          `).join('');
+        return;
       } else {
         errorText = await res.text();
         throw new Error('Response was not JSON');
@@ -64,17 +75,7 @@ async function getNews() {
       console.error('Response parsing failed:', parseError);
       throw new Error(`Failed to parse response: ${errorText || parseError.message}`);
     }
-    if (!data.articles || data.articles.length === 0) {
-      newsDiv.innerHTML = 'No news found.';
-      return;
-    }
-    newsDiv.innerHTML = '<h2>Top 5 News in Australia</h2>' +
-      data.articles.map(article => `
-        <div class="news-item">
-          <a href="${article.url}" target="_blank"><b>${article.title}</b></a>
-          <p>${article.description || ''}</p>
-        </div>
-      `).join('');
+    newsDiv.innerHTML = '<span style="color:red;">Failed to load news data.</span>';
   } catch (err) {
     console.error('getNews error:', err);
     newsDiv.innerHTML = `<span style="color:red;">Could not load news. Check console for details.</span>`;
