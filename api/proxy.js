@@ -32,7 +32,8 @@ app.use((req, res, next) => {
 app.get('/news', async (req, res) => {
   if (!NEWS_API_KEY) return res.status(500).json({ error: 'NEWS_API_KEY not configured on proxy.' });
   try {
-    const url = `https://newsapi.org/v2/top-headlines?country=au&pageSize=5&apiKey=${NEWS_API_KEY}`;
+    // Try everything endpoint if no headlines available
+    const url = `https://newsapi.org/v2/everything?q=australia&pageSize=5&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
     console.log('Fetching news from NewsAPI...');
     const r = await fetch(url);
     const data = await r.json();
