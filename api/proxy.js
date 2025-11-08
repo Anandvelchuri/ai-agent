@@ -8,12 +8,17 @@ if (!NEWS_API_KEY) {
   console.warn('WARNING: NEWS_API_KEY environment variable is not set. The proxy will return 500 until configured.');
 }
 
-// Simple CORS - allow all origins (fine for a small personal proxy)
+// CORS middleware with detailed headers
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Max-Age', '86400'); // 24 hours
+  res.setHeader('Cache-Control', 'no-cache');
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   next();
 });
 
