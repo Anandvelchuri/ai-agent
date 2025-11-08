@@ -1,8 +1,15 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
+
+// Log startup config
+console.log('Starting proxy server with config:', {
+  port: PORT,
+  newsApiKeySet: !!NEWS_API_KEY,
+  nodeEnv: process.env.NODE_ENV
+});
 
 if (!NEWS_API_KEY) {
   console.warn('WARNING: NEWS_API_KEY environment variable is not set. The proxy will return 500 until configured.');
@@ -64,6 +71,13 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Add a root endpoint for basic health check
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'News proxy is running' });
+});
+
 app.listen(PORT, () => {
-  console.log(`News proxy listening on http://localhost:${PORT} (use /news).`);
+  console.log(`News proxy listening on http://localhost:${PORT}`);
+  console.log(`Health check: GET /`);
+  console.log(`News endpoint: GET /news`);
 });
