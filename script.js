@@ -36,48 +36,28 @@ async function getNews() {
   const newsDiv = document.getElementById('news');
   newsDiv.innerHTML = 'Loading news...';
   try {
-    const url = `${PROXY_URL.replace(/\/$/, '')}/news`;
-    console.log('Fetching news from proxy...');
-    
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    });
-    
-    let errorText;
-    try {
-      const contentType = res.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const data = await res.json();
-        if (!res.ok) {
-          errorText = JSON.stringify(data);
-          throw new Error(`API Error: ${data.error || data.message || 'Unknown error'}`);
-        }
-        if (!data.articles || data.articles.length === 0) {
-          newsDiv.innerHTML = 'No news found.';
-          return;
-        }
-        newsDiv.innerHTML = '<h2>Top 5 News in Australia</h2>' +
-          data.articles.map(article => `
-            <div class="news-item">
-              <a href="${article.url}" target="_blank"><b>${article.title}</b></a>
-              <p>${article.description || ''}</p>
-            </div>
-          `).join('');
-        return;
-      } else {
-        errorText = await res.text();
-        throw new Error('Response was not JSON');
-      }
-    } catch (parseError) {
-      console.error('Response parsing failed:', parseError);
-      throw new Error(`Failed to parse response: ${errorText || parseError.message}`);
+    const url = `${PROXY_URL}/news`;
+    console.log('Fetching news from:', url);
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    console.log('Response:', data);
+
+    if (!data.articles || data.articles.length === 0) {
+      newsDiv.innerHTML = 'No news found.';
+      return;
     }
-    newsDiv.innerHTML = '<span style="color:red;">Failed to load news data.</span>';
+
+    newsDiv.innerHTML = '<h2>Top 5 News in Australia</h2>' +
+      data.articles.map(article => `
+        <div class="news-item">
+          <a href="${article.url}" target="_blank">${article.title}</a>
+          ${article.description ? `<p>${article.description}</p>` : ''}
+        </div>
+      `).join('');
   } catch (err) {
-    console.error('getNews error:', err);
-    newsDiv.innerHTML = `<span style="color:red;">Could not load news. Check console for details.</span>`;
+    console.error('Error fetching news:', err);
+    newsDiv.innerHTML = `<span style="color:red;">Error loading news: ${err.message}</span>`;
   }
 }
