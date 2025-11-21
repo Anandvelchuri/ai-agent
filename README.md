@@ -1,5 +1,7 @@
 # City weather and news App
 
+App is hosted on Github pages and can be accessed using this link - https://anandvelchuri.github.io/ai-agent/ 
+
 A small frontend + proxy demo that shows local weather and top news in Australia. The frontend is served via GitHub Pages (or locally) and it calls a small Express proxy to fetch NewsAPI results so the NewsAPI key is kept on the server side.
 
 Features
